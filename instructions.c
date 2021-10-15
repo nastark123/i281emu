@@ -191,15 +191,30 @@ void shift(ParsedInst inst) {
 }
 
 void cmp(ParsedInst inst) {
-    sub(inst);
-    // int8_t res = regs[inst.b23] - regs[inst.b01];
-    // alu_flags = 0;
-    // if(res == 0) {
-    //     alu_flags |= FLAG_Z;
-    // }
-    // if(res < 0) {
-    //     alu_flags |= FLAG_N;
-    // }
+    int8_t neg = -regs[inst.b01];
+    int16_t sum = regs[inst.b23] + neg;
+    alu_flag = 0;
+    // check zero
+    if((sum & 0xFF) == 0) {
+        alu_flag |= FLAG_Z;
+    }
+    // TODO make this better
+    // check overflow
+    if((regs[inst.b23] < 0 && neg < 0) && sum >= 0) {
+        alu_flag |= FLAG_O;
+    } else if((regs[inst.b23] < 0 && neg < 0) && sum <= 0) {
+        alu_flag |= FLAG_O;
+    }
+
+    // check carry
+    if((sum >> 8) & 1) {
+        alu_flag |= FLAG_C;
+    }
+
+    // check negative
+    if((sum & 0xFF) < 0) {
+        alu_flag |= FLAG_N;
+    }
 }
 
 void jump(ParsedInst inst) {

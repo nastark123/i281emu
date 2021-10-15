@@ -12,19 +12,49 @@
 
 int main() {
     // simple arithmetic program
+    // c_mem[0] = 0b1000000000000000;
+    // c_mem[1] = 0b0010100000000000;
+    // c_mem[2] = 0b0101100000000011;
+    // c_mem[3] = 0b1010100000000001;
+
+    // simple array program
+    // c_mem[0] = 0b0011000000000000;
+    // c_mem[1] = 0b1010000000000000;
+    // c_mem[2] = 0b1000010000000001;
+    // c_mem[3] = 0b0101010000000101;
+    // c_mem[4] = 0b1010010000000001;
+    // c_mem[5] = 0b1000100000000010;
+    // c_mem[6] = 0b0111100000000001;
+    // c_mem[7] = 0b1010100000000010;
+    // c_mem[8] = 0b1000110000000011;
+    // c_mem[9] = 0b0100111000000000;
+    // c_mem[10] = 0b1010110000000011;
+
+    // simple if statement
     c_mem[0] = 0b1000000000000000;
-    c_mem[1] = 0b0010100000000000;
-    c_mem[2] = 0b0101100000000011;
-    c_mem[3] = 0b1010100000000001;
+    c_mem[1] = 0b1000010000000001;
+    c_mem[2] = 0b1101000100000000;
+    c_mem[3] = 0b1111000100000001;
+    c_mem[4] = 0b1010000000000010;
+    c_mem[5] = 000000000000000000;
 
-    // initial data memory setup
-    d_mem[0] = 2;
+    // initial data memory setup for array
+    // d_mem[0] = 1;
+    // d_mem[1] = 2;
+    // d_mem[2] = 3;
+    // d_mem[3] = 4;
 
-    while(program_counter < 4) {
+    // initial data memory setup for the if statement demo
+    d_mem[0] = 3;
+    d_mem[1] = 5;
+    d_mem[2] = 0;
+
+    while(program_counter < 6) {
         // current instruction to be executed
         ParsedInst inst = parse_opcode(c_mem[program_counter]);
         switch(inst.opcode) {
             case NOOP:
+                printf("NOOP\n");
                 break;
 
             case INPUT:
@@ -92,6 +122,7 @@ int main() {
         printf("Contents of data memory:\n");
         print_d_mem_hex();
         print_regs_hex();
+        printf("\n\n");
 
         program_counter++;
     }
