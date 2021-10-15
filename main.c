@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include "hardwaredefs.h"
 #include "instructions.h"
+#include "fileparse.h"
 
 /**
  * 
@@ -11,45 +12,26 @@
  */
 
 int main() {
-    // simple arithmetic program
-    // c_mem[0] = 0b1000000000000000;
-    // c_mem[1] = 0b0010100000000000;
-    // c_mem[2] = 0b0101100000000011;
-    // c_mem[3] = 0b1010100000000001;
+    printf("Enter a binary file to emulate: ");
+    char buff[128];
+    fgets(buff, 128, stdin);
 
-    // simple array program
-    // c_mem[0] = 0b0011000000000000;
-    // c_mem[1] = 0b1010000000000000;
-    // c_mem[2] = 0b1000010000000001;
-    // c_mem[3] = 0b0101010000000101;
-    // c_mem[4] = 0b1010010000000001;
-    // c_mem[5] = 0b1000100000000010;
-    // c_mem[6] = 0b0111100000000001;
-    // c_mem[7] = 0b1010100000000010;
-    // c_mem[8] = 0b1000110000000011;
-    // c_mem[9] = 0b0100111000000000;
-    // c_mem[10] = 0b1010110000000011;
+    buff[strlen(buff) - 1] = '\0'; // remove newline
 
-    // simple if statement
-    c_mem[0] = 0b1000000000000000;
-    c_mem[1] = 0b1000010000000001;
-    c_mem[2] = 0b1101000100000000;
-    c_mem[3] = 0b1111000100000001;
-    c_mem[4] = 0b1010000000000010;
-    c_mem[5] = 000000000000000000;
+    int num_opcodes = parse_binary_bin(buff, c_mem, C_MEM_SIZE);
 
-    // initial data memory setup for array
-    // d_mem[0] = 1;
-    // d_mem[1] = 2;
-    // d_mem[2] = 3;
-    // d_mem[3] = 4;
+    int num_data = parse_d_mem_bin(buff, d_mem, D_MEM_SIZE);
 
-    // initial data memory setup for the if statement demo
-    d_mem[0] = 3;
-    d_mem[1] = 5;
-    d_mem[2] = 0;
+    printf("Read %d opcodes from file\n", num_opcodes);
+    printf("Read %d bytes from data segment\n\n", num_data);
 
-    while(program_counter < 6) {
+    for(int i = 0; i < C_MEM_SIZE; i++) {
+        print_bin((uint8_t)(c_mem[i] >> 8));
+        print_bin((uint8_t) c_mem[i]);
+        printf("\n");
+    }
+
+    while(program_counter < num_opcodes) {
         // current instruction to be executed
         ParsedInst inst = parse_opcode(c_mem[program_counter]);
         switch(inst.opcode) {
@@ -125,6 +107,8 @@ int main() {
         printf("\n\n");
 
         program_counter++;
+
+        getchar();
     }
 
     return 0;

@@ -212,7 +212,7 @@ void cmp(ParsedInst inst) {
     }
 
     // check negative
-    if((sum & 0xFF) < 0) {
+    if((int8_t) sum < 0) {
         alu_flag |= FLAG_N;
     }
 }
