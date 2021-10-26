@@ -1,12 +1,3 @@
-*.o
-*.so
-*.exe
-
-*.tar
-*.xz
-*.gz
-*.zip
-
-*.log
-
-*.bin
+out/*
+testbinaries/*
+src/build
