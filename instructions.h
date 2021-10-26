@@ -65,6 +65,9 @@ typedef struct {
 // function to return the opcode from 
 ParsedInst parse_opcode(uint16_t inst);
 
+// function to print the instruction corresponding to the current opcode
+char* opcode_to_str(ParsedInst inst);
+
 // function prototypes for each of the instructions
 void input(ParsedInst inst);
 

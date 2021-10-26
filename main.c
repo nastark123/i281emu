@@ -101,9 +101,11 @@ int main() {
         }
 
         printf("Program counter: %d\n", program_counter);
+        printf("Current instruction at program counter: %s\n", opcode_to_str(inst));
         printf("Contents of data memory:\n");
         print_d_mem_hex();
         print_regs_hex();
+        printf("ALU flags: %d", alu_flag);
         printf("\n\n");
 
         program_counter++;

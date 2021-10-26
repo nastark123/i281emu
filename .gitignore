@@ -1,0 +1,12 @@
+*.o
+*.so
+*.exe
+
+*.tar
+*.xz
+*.gz
+*.zip
+
+*.log
+
+*.bin

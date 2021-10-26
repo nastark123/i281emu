@@ -11,6 +11,58 @@ ParsedInst parse_opcode(uint16_t inst) {
     return p;
 }
 
+char* opcode_to_str(ParsedInst inst) {
+    switch(inst.opcode) {
+        case NOOP:
+            return "NOOP";
+
+        case INPUT:
+            return "INPUT";
+
+        case MOVE:
+            return "MOVE";
+
+        case LOADI:
+            return "LOADI";
+
+        case ADD:
+            return "ADD";
+
+        case ADDI:
+            return "ADDI";
+
+        case SUB:
+            return "SUB";
+
+        case SUBI:
+            return "SUBI";
+
+        case LOAD:
+            return "LOAD";
+
+        case LOADF:
+            return "LOADF";
+
+        case STORE:
+            return "STORE";
+
+        case STOREF:
+            return "STOREF";
+
+        case SHIFT:
+            return "SHIFT";
+
+        case CMP:
+            return "CMP";
+
+        case JUMP:
+            return "JUMP";
+
+        case BR:
+            return "BR";
+    }
+}
+
 void input(ParsedInst inst) {
     // TODO change this to be automatic
     if(inst.b01 == INPUTC || inst.b01 == INPUTCF) {
@@ -218,20 +270,23 @@ void cmp(ParsedInst inst) {
 }
 
 void jump(ParsedInst inst) {
-    program_counter += 1 + ((int8_t) inst.data);
+    // program_counter += 1 + ((int8_t) inst.data);
+    program_counter += ((int8_t) inst.data);
 }
 
 void br(ParsedInst inst) {
     switch(inst.b01) {
         case BRE:
             if((alu_flag & FLAG_Z) != 0) {
-                program_counter += 1 + ((int8_t) inst.data);
+                // program_counter += 1 + ((int8_t) inst.data);
+                program_counter += ((int8_t) inst.data);
             }
             break;
 
         case BRNE:
             if((alu_flag & FLAG_Z) == 0) {
-                program_counter += 1 + ((int8_t) inst.data);
+                // program_counter += 1 + ((int8_t) inst.data);
+                program_counter += ((int8_t) inst.data);
             }
             break;
 
@@ -239,14 +294,16 @@ void br(ParsedInst inst) {
             if((alu_flag & FLAG_Z) == 0 && (alu_flag & (FLAG_O | FLAG_N)) == 0
                 || (alu_flag & (FLAG_O | FLAG_N)) == (FLAG_O | FLAG_N)) {
                 
-                program_counter += 1 + ((int8_t) inst.data);
+                // program_counter += 1 + ((int8_t) inst.data);
+                program_counter += ((int8_t) inst.data);
             }
             break;
 
         case BRGE:
             if((alu_flag & (FLAG_O | FLAG_N)) == 0 || (alu_flag & (FLAG_O | FLAG_N)) == (FLAG_O | FLAG_N)) {
                 
-                program_counter += 1 + ((int8_t) inst.data);
+                // program_counter += 1 + ((int8_t) inst.data);
+                program_counter += ((int8_t) inst.data);
             }
             break;
     }
