@@ -43,7 +43,7 @@ void print_d_mem_bin() {
     for(int i = 0; i < D_MEM_SIZE - 1; i++) {
         print_bin((uint8_t) d_mem[i]);
         printf(" ");
-        if(i != 0 && i % 8 == 0) printf("\n");
+        if((i + 1) != 0 && (i + 1) % 8 == 0) printf("\n");
     }
     print_bin((uint8_t) d_mem[D_MEM_SIZE - 1]);
     printf("\n");
@@ -52,7 +52,7 @@ void print_d_mem_bin() {
 void print_d_mem_hex() {
     for(int i = 0; i < D_MEM_SIZE - 1; i++) {
         printf("0x%02x ", d_mem[i]);
-        if(i != 0 && i % 8 == 0) printf("\n");
+        if((i -+ 1) != 0 && (i + 1) % 8 == 0) printf("\n");
     }
     printf("0x%02x\n", d_mem[D_MEM_SIZE - 1]);
 }

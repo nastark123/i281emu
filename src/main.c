@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <time.h>
 #include "hardwaredefs.h"
 #include "instructions.h"
 #include "fileparse.h"
@@ -11,16 +12,22 @@
  * 
  */
 
-int main() {
-    printf("Enter a binary file to emulate: ");
-    char buff[128];
-    fgets(buff, 128, stdin);
+int main(int argc, char *argv[]) {
+    // printf("Enter a binary file to emulate: ");
+    // char buff[128];
+    // fgets(buff, 128, stdin);
 
-    buff[strlen(buff) - 1] = '\0'; // remove newline
+    // buff[strlen(buff) - 1] = '\0'; // remove newline
 
-    int num_opcodes = parse_binary_bin(buff, c_mem, C_MEM_SIZE);
+    // int num_opcodes = parse_binary_bin(buff, c_mem, C_MEM_SIZE);
 
-    int num_data = parse_d_mem_bin(buff, d_mem, D_MEM_SIZE);
+    // int num_data = parse_d_mem_bin(buff, d_mem, D_MEM_SIZE);
+
+    int instructions_executed = 0;
+
+    int num_opcodes = parse_binary_bin(argv[1], c_mem, C_MEM_SIZE);
+
+    int num_data = parse_d_mem_bin(argv[1], d_mem, D_MEM_SIZE);
 
     printf("Read %d opcodes from file\n", num_opcodes);
     printf("Read %d bytes from data segment\n\n", num_data);
@@ -30,6 +37,8 @@ int main() {
         print_bin((uint8_t) c_mem[i]);
         printf("\n");
     }
+
+    clock_t start = clock();
 
     while(program_counter < num_opcodes) {
         // current instruction to be executed
@@ -100,18 +109,33 @@ int main() {
                 break;
         }
 
-        printf("Program counter: %d\n", program_counter);
-        printf("Current instruction at program counter: %s\n", opcode_to_str(inst));
-        printf("Contents of data memory:\n");
-        print_d_mem_hex();
-        print_regs_hex();
-        printf("ALU flags: %d", alu_flag);
-        printf("\n\n");
+        // printf("Program counter: %d\n", program_counter);
+        // printf("Current instruction at program counter: %s\n", opcode_to_str(inst));
+        // printf("Contents of data memory:\n");
+        // print_d_mem_hex();
+        // print_regs_hex();
+        // printf("ALU flags: %d", alu_flag);
+        // printf("\n\n");
 
         program_counter++;
+        instructions_executed++;
 
-        getchar();
+        // getchar();
     }
+
+    clock_t end = clock();
+
+    printf("Final contents of data memory:\n");
+    print_d_mem_hex();
+    print_regs_hex();
+    printf("ALU flags: %d", alu_flag);
+    printf("\n\n");
+
+    double time = (double)(end - start) / CLOCKS_PER_SEC;
+    double inst_per_sec = instructions_executed / time;
+
+    printf("Program done (%.02lf million instructions per second)\n", inst_per_sec / 1e6);
+
 
     return 0;
 }
