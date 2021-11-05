@@ -13,15 +13,6 @@
  */
 
 int main(int argc, char *argv[]) {
-    // printf("Enter a binary file to emulate: ");
-    // char buff[128];
-    // fgets(buff, 128, stdin);
-
-    // buff[strlen(buff) - 1] = '\0'; // remove newline
-
-    // int num_opcodes = parse_binary_bin(buff, c_mem, C_MEM_SIZE);
-
-    // int num_data = parse_d_mem_bin(buff, d_mem, D_MEM_SIZE);
 
     int instructions_executed = 0;
 
