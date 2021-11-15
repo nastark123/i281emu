@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
+#include "control.h"
 #include "hardwaredefs.h"
 #include "instructions.h"
 #include "fileparse.h"
@@ -13,15 +14,6 @@
  */
 
 int main(int argc, char *argv[]) {
-    // printf("Enter a binary file to emulate: ");
-    // char buff[128];
-    // fgets(buff, 128, stdin);
-
-    // buff[strlen(buff) - 1] = '\0'; // remove newline
-
-    // int num_opcodes = parse_binary_bin(buff, c_mem, C_MEM_SIZE);
-
-    // int num_data = parse_d_mem_bin(buff, d_mem, D_MEM_SIZE);
 
     int instructions_executed = 0;
 
@@ -41,86 +33,11 @@ int main(int argc, char *argv[]) {
     clock_t start = clock();
 
     while(program_counter < num_opcodes) {
-        // current instruction to be executed
-        ParsedInst inst = parse_opcode(c_mem[program_counter]);
-        switch(inst.opcode) {
-            case NOOP:
-                printf("NOOP\n");
-                break;
-
-            case INPUT:
-                input(inst);
-                break;
-
-            case MOVE:
-                move(inst);
-                break;
-
-            case LOADI:
-                loadi(inst);
-                break;
-
-            case ADD:
-                add(inst);
-                break;
-
-            case ADDI:
-                addi(inst);
-                break;
-
-            case SUB:
-                sub(inst);
-                break;
-
-            case SUBI:
-                subi(inst);
-                break;
-
-            case LOAD:
-                load(inst);
-                break;
-
-            case LOADF:
-                loadf(inst);
-                break;
-
-            case STORE:
-                store(inst);
-                break;
-
-            case STOREF:
-                storef(inst);
-                break;
-
-            case SHIFT:
-                shift(inst);
-                break;
-
-            case CMP:
-                cmp(inst);
-                break;
-
-            case JUMP:
-                jump(inst);
-                break;
-
-            case BR:
-                br(inst);
-                break;
-        }
-
-        // printf("Program counter: %d\n", program_counter);
-        // printf("Current instruction at program counter: %s\n", opcode_to_str(inst));
-        // printf("Contents of data memory:\n");
-        // print_d_mem_hex();
-        // print_regs_hex();
-        // printf("ALU flags: %d", alu_flag);
-        // printf("\n\n");
+        
+        parse_and_exec(c_mem[program_counter]);
 
         program_counter++;
         instructions_executed++;
-
-        // getchar();
     }
 
     clock_t end = clock();
@@ -131,10 +48,11 @@ int main(int argc, char *argv[]) {
     printf("ALU flags: %d", alu_flag);
     printf("\n\n");
 
-    double time = (double)(end - start) / CLOCKS_PER_SEC;
-    double inst_per_sec = instructions_executed / time;
+    double time_sec = (double)(end - start) / CLOCKS_PER_SEC;
+    double inst_per_sec = instructions_executed / time_sec;
 
-    printf("Program done (%.02lf million instructions per second)\n", inst_per_sec / 1e6);
+    printf("Program done\n");
+    printf("%d instructions executed in ~%.03lf milliseconds (~%.02lf million instructions per second)\n", instructions_executed, time_sec * 1e3, inst_per_sec / 1e6);
 
 
     return 0;
