@@ -1,5 +1,19 @@
 #include "control.h"
 
+const char *cmds[] = {"run", "break", "clear", "cont", "next", "print", "time"};
+
+int cmd_to_id(const char *cmd) {
+    for(int i = 0; i < sizeof(cmds); i++) {
+        if(strcmp(cmd, cmds[i]) == 0) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+
+
 void parse_and_exec(uint16_t inst) {
     // current instruction to be executed
     ParsedInst parsed_inst = parse_opcode(inst);
