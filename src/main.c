@@ -15,37 +15,41 @@
 
 int main(int argc, char *argv[]) {
 
+    // struct that will store the program counter, alu flag, registers, data memory, and code memory
+    HardwareInfo hi;
+    memset(&hi, 0, sizeof(hi));
+
     int instructions_executed = 0;
 
-    int num_opcodes = parse_binary_bin(argv[1], c_mem, C_MEM_SIZE);
+    int num_opcodes = parse_binary_bin(argv[1], hi.c_mem, C_MEM_SIZE);
 
-    int num_data = parse_d_mem_bin(argv[1], d_mem, D_MEM_SIZE);
+    int num_data = parse_d_mem_bin(argv[1], hi.d_mem, D_MEM_SIZE);
 
     printf("Read %d opcodes from file\n", num_opcodes);
     printf("Read %d bytes from data segment\n\n", num_data);
 
-    for(int i = 0; i < C_MEM_SIZE; i++) {
-        print_bin((uint8_t)(c_mem[i] >> 8));
-        print_bin((uint8_t) c_mem[i]);
+    for(int i = 0; i < num_opcodes; i++) {
+        print_bin((uint8_t)(hi.c_mem[i] >> 8));
+        print_bin((uint8_t) hi.c_mem[i]);
         printf("\n");
     }
 
     clock_t start = clock();
 
-    while(program_counter < num_opcodes) {
+    while(hi.program_counter < num_opcodes) {
         
-        parse_and_exec(c_mem[program_counter]);
+        parse_and_exec(hi.c_mem[hi.program_counter], &hi);
 
-        program_counter++;
+        hi.program_counter++;
         instructions_executed++;
     }
 
     clock_t end = clock();
 
     printf("Final contents of data memory:\n");
-    print_d_mem_hex();
-    print_regs_hex();
-    printf("ALU flags: %d", alu_flag);
+    print_d_mem_hex(hi);
+    print_regs_hex(hi);
+    printf("ALU flags: %d", hi.alu_flag);
     printf("\n\n");
 
     double time_sec = (double)(end - start) / CLOCKS_PER_SEC;

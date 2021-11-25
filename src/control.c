@@ -1,20 +1,42 @@
 #include "control.h"
 
-const char *cmds[] = {"run", "break", "clear", "cont", "next", "print", "time"};
+void parse_and_exec_cmd(char *str, CommandInfo *ci, HardwareInfo *hi) {
+    Command cmd = parse_cmd(str);
 
-int cmd_to_id(const char *cmd) {
-    for(int i = 0; i < sizeof(cmds); i++) {
-        if(strcmp(cmd, cmds[i]) == 0) {
-            return i;
-        }
+    switch(cmd.id) {
+
+        case RUN:
+            run(ci);
+            break;
+
+        case BREAK:
+            add_break(cmd, ci);
+            break;
+
+        case CLEAR:
+            clear(cmd, ci);
+            break;
+
+        case CONT:
+            cont(ci);
+            break;
+
+        case NEXT:
+            next(ci);
+            break;
+
+        case PRINT:
+            print(cmd);
+            break;
+
+        case TIME:
+            print_time();
+            break;
     }
-
-    return -1;
 }
 
 
-
-void parse_and_exec(uint16_t inst) {
+void parse_and_exec(uint16_t inst, HardwareInfo *hi) {
     // current instruction to be executed
     ParsedInst parsed_inst = parse_opcode(inst);
     switch(parsed_inst.opcode) {
@@ -24,63 +46,63 @@ void parse_and_exec(uint16_t inst) {
             break;
 
         case INPUT:
-            input(parsed_inst);
+            input(parsed_inst, hi);
             break;
 
         case MOVE:
-            move(parsed_inst);
+            move(parsed_inst, hi);
             break;
 
         case LOADI:
-            loadi(parsed_inst);
+            loadi(parsed_inst, hi);
             break;
 
         case ADD:
-            add(parsed_inst);
+            add(parsed_inst, hi);
             break;
 
         case ADDI:
-            addi(parsed_inst);
+            addi(parsed_inst, hi);
             break;
 
         case SUB:
-            sub(parsed_inst);
+            sub(parsed_inst, hi);
             break;
 
         case SUBI:
-            subi(parsed_inst);
+            subi(parsed_inst, hi);
             break;
 
         case LOAD:
-            load(parsed_inst);
+            load(parsed_inst, hi);
             break;
 
         case LOADF:
-            loadf(parsed_inst);
+            loadf(parsed_inst, hi);
             break;
 
         case STORE:
-            store(parsed_inst);
+            store(parsed_inst, hi);
             break;
 
         case STOREF:
-            storef(parsed_inst);
+            storef(parsed_inst, hi);
             break;
 
         case SHIFT:
-            shift(parsed_inst);
+            shift(parsed_inst, hi);
             break;
 
         case CMP:
-            cmp(parsed_inst);
+            cmp(parsed_inst, hi);
             break;
 
         case JUMP:
-            jump(parsed_inst);
+            jump(parsed_inst, hi);
             break;
 
         case BR:
-            br(parsed_inst);
+            br(parsed_inst, hi);
             break;
     }
 }

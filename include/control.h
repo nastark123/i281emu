@@ -12,27 +12,17 @@
 #include <string.h>
 #include <time.h>
 #include "instructions.h"
-#include "vector.h"
+#include "command.h"
+#include "hardwaredefs.h"
 
-// array of all recognized commands that can be inputted by user
-extern const char *cmds[];
-
-// head of linked list that will store breakpoints
-
-
-#define RUN 0x00
-#define BREAK 0x01
-#define CLEAR 0x02
-#define CONT 0x03
-#define NEXT 0x04
-#define PRINT 0x05
-#define TIME 0x06
-
-// converts the string representation of a command to its id
-int cmd_to_id(const char *cmd);
+// parses and executes a command read from the user
+// str is the string read from the user
+// CommandInfo is a bundle of relevant context from the main program that may be modified by the commands
+void parse_and_exec_cmd(char *str, CommandInfo *ci, HardwareInfo *hi);
 
 // parses and executes an instruction
-void parse_and_exec(uint16_t inst);
+// TODO modify this to use a similar structure to the parse_and_exec_cmd() function to avoid globals
+void parse_and_exec(uint16_t inst, HardwareInfo *hi);
 
 
 
