@@ -26,11 +26,11 @@ void parse_and_exec_cmd(char *str, CommandInfo *ci, HardwareInfo *hi) {
             break;
 
         case PRINT:
-            print(cmd);
+            print(cmd, hi);
             break;
 
         case TIME:
-            print_time();
+            print_time(ci);
             break;
     }
 }

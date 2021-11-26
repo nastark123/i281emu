@@ -19,8 +19,8 @@ Command parse_cmd(char *cmd) {
 
     char *extra = strchr(cmd, ' ');
     if(extra != NULL) {
-        c.extra = malloc(sizeof(char) * (strlen(extra) + 1));
-        strcpy(c.extra, extra);
+        c.extra = malloc(sizeof(char) * (strlen(extra)));
+        strcpy(c.extra, extra + 1);
     } else {
         c.extra = NULL;
     }
@@ -34,7 +34,7 @@ void run(CommandInfo *ci) {
 
 void add_break(Command c, CommandInfo *ci, HardwareInfo *hi) {
     // char pointer to check for strtol errors
-    char *end;
+    char *end = NULL;
     int line = strtol(c.extra, end, 10);
 
     // end will be NULL if the conversion succeeded
@@ -72,14 +72,37 @@ void next(CommandInfo *ci, HardwareInfo *hi) {
     parse_and_exec(hi->c_mem[hi->program_counter], hi);
 }
 
-void print(Command c) {
-
-
+void print(Command c, HardwareInfo *hi) {
     // this is bad, but I didn't have time to implement a hash map, and didn't want to restrict myself to POSIX
+    int address = -1; // address that will be read from
+    if(strncmp(c.extra, "dmem", 4) == 0) {
+        sscanf(" %*s %d", &address);
+        if(address < D_MEM_SIZE && address >= 0) {
+            printf("Contents of data memory address %d: %x\n", address, hi->d_mem[address]);
+            return;
+        }
+    } else if(strncmp(c.extra, "cmem", 4) == 0) {
+        sscanf(" %*s %d", &address);
+        if(address < C_MEM_SIZE && address >= 0) {
+            printf("Contents of code memory address %d: %x\n", address, hi->c_mem[address]);
+            return;
+        }
+    } else if(strncmp(c.extra, "reg", 3) == 0) {
+        sscanf(" %*s %d", &address);
+        if(address < 4 && address >= 0) {
+            printf("Contents of register %c: %x\n", address + 'A', hi->regs[address]);
+            return;
+        }
+    } else {
+        printf("Invalid location specified.  Valid locations are dmem, cmem, and reg\n");
+        return;
+    }
+
+    printf("Address out of range\n");
 }
 
 void print_time(CommandInfo *ci) {
     double time_secs = (double)ci->time_taken / CLOCKS_PER_SEC;
-    printf("~%.03lf milliseconds taken (this number is approximate for low instruction counts)\n", 1e3 * time_secs);
-    printf("~%.02lf million instructions per second\n", ci->instructions_executed / time_secs);
+    printf("%d instructions executed in ~%.03lf milliseconds (this number is approximate for low instruction counts)\n", ci->instructions_executed, 1e3 * time_secs);
+    printf("~%.02lf million instructions per second\n", ci->instructions_executed / time_secs / 1e6);
 }

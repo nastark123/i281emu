@@ -24,8 +24,8 @@ int main(int argc, char *argv[]) {
     // struct that will store info to be passed to the command interpreter
     CommandInfo ci;
     memset(&ci, 0, sizeof(ci));
-    // TODO initialize breakpoint list
     ci.break_head = NULL;
+    ci.time_taken = 0;
 
     // buffer to store user commands
     char *cmd_buff = malloc(sizeof(char) * 1024);
@@ -61,14 +61,25 @@ int main(int argc, char *argv[]) {
         LLNodeData data;
         data.i = hi.program_counter;
         if(ll_contains(ci.break_head, data)) {
+            // stop the timer
+            clock_t end = clock();
+
+            // update the time taken
+            ci.time_taken += end - start;
+
             printf("Hit breakpoint at instruction %d\n", hi.program_counter);
+            // disable execution
             ci.run = false;
+            // parse and run commands until the user tells us to continue the program
             while(!ci.run) {
                 // prompt the user for a command
                 prompt_cmd(NULL, cmd_buff, 1024);
                 // execute the command read from the user
                 parse_and_exec_cmd(cmd_buff, &ci, &hi);
             }
+
+            // resume the timer
+            start = clock();
         }
         
         parse_and_exec(hi.c_mem[hi.program_counter], &hi);
@@ -78,6 +89,7 @@ int main(int argc, char *argv[]) {
     }
 
     clock_t end = clock();
+    ci.time_taken += end - start;
 
     printf("Final contents of data memory:\n");
     print_d_mem_hex(hi);
@@ -85,7 +97,7 @@ int main(int argc, char *argv[]) {
     printf("ALU flags: %d", hi.alu_flag);
     printf("\n\n");
 
-    double time_sec = (double)(end - start) / CLOCKS_PER_SEC;
+    double time_sec = (double)ci.time_taken / CLOCKS_PER_SEC;
     double inst_per_sec = ci.instructions_executed / time_sec;
 
     printf("Program done\n");

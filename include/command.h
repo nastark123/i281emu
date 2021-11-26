@@ -12,7 +12,7 @@
 typedef struct {
     LLNode *break_head; // head of the linked list that stores the breakpoints
     clock_t time_taken; // amount of time spent actually executing the program
-    int instructions_executed;
+    int instructions_executed; // number of instructions executed
     bool run; // whether or not the program should resume execution of the file being emulated or prompt for another command
 } CommandInfo;
 
@@ -60,10 +60,10 @@ void cont(CommandInfo *ci);
 void next(CommandInfo *ci, HardwareInfo *hi);
 
 // print a value, can be from a register, data memory, or code memory addresss
-void print(Command c);
+void print(Command c, HardwareInfo *hi);
 
 // print the current amount of time that the program has used
 // called print_time to avoid naming conflicts
-void print_time();
+void print_time(CommandInfo *ci);
 
 #endif
