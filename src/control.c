@@ -10,7 +10,7 @@ void parse_and_exec_cmd(char *str, CommandInfo *ci, HardwareInfo *hi) {
             break;
 
         case BREAK:
-            add_break(cmd, ci);
+            add_break(cmd, ci, hi);
             break;
 
         case CLEAR:
@@ -22,7 +22,7 @@ void parse_and_exec_cmd(char *str, CommandInfo *ci, HardwareInfo *hi) {
             break;
 
         case NEXT:
-            next(ci);
+            next(ci, hi);
             break;
 
         case PRINT:
@@ -105,4 +105,23 @@ void parse_and_exec(uint16_t inst, HardwareInfo *hi) {
             br(parsed_inst, hi);
             break;
     }
+}
+
+int prompt_cmd(char *custom_msg, char *str, int n) {
+    if(custom_msg != NULL) {
+        printf("%s\n", custom_msg);
+    }
+
+    printf("i281emu> ");
+    if(fgets(str, n, stdin) == NULL) return -1;
+    // remove the newline
+    str[strlen(str) - 1] = '\0';
+    return strlen(str);
+}
+
+void print_welcome() {
+    printf("Welcome to i281emu version %d.%d.%d\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUGFIX);
+    printf("Written by Nathan Stark for CPR E 281 Digital Logic Fall 2021\n");
+    printf("Based on the i281 CPU designed by Prof. Alexander Stoytchev at Iowa State University\n");
+    printf("Enter any command to begin operation\n\n");
 }

@@ -9,7 +9,7 @@ SRCOBJ=$(patsubst $(SRCDIR)/%.c, $(SRCBUILD)/%.o, $(SRCFILES))
 
 TARGETDIR=./out
 
-CFLAGS=-I$(INCDIR) -Wall -O3
+CFLAGS=-I$(INCDIR) -Wall -O3 -g
 COFLAGS=-c
 # flags for linking, currently not needed for this project
 # LFLAGS

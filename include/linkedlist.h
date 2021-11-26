@@ -19,6 +19,7 @@ typedef struct LLNode {
 bool ll_contains(LLNode *head, LLNodeData val);
 
 // adds node_to_add to the end of the linkedlist
-void ll_add(LLNode *head, LLNode *node_to_add);
+// returns the new head of the linkedlist
+LLNode *ll_add(LLNode *head, LLNode *node_to_add);
 
 #endif

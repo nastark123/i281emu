@@ -20,6 +20,7 @@ typedef struct {
     int8_t regs[4]; // CPU registers
     uint8_t program_counter; // program counter, stores address of current instruction in code memory
     uint8_t alu_flag; // flag that stores different conditions that can occur from ALU processing
+    uint8_t num_opcodes; // how many opcodes were read into the 
 } HardwareInfo;
 
 // prints the current values in all registers to the screen as binary

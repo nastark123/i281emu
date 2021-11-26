@@ -3,12 +3,17 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <time.h>
+#include "hardwaredefs.h"
 #include "linkedlist.h"
 
 // struct that bundles the data necessary to execute commands
 typedef struct {
-    LLNode *head;
-    bool break_after_next;
+    LLNode *break_head; // head of the linked list that stores the breakpoints
+    clock_t time_taken; // amount of time spent actually executing the program
+    int instructions_executed;
+    bool run; // whether or not the program should resume execution of the file being emulated or prompt for another command
 } CommandInfo;
 
 // struct that represents a command
@@ -17,8 +22,7 @@ typedef struct {
     char *extra; // extra data passed with the command
 } Command;
 
-// number of commands
-#define NUM_CMDS 
+#define NUM_CMDS 7
 
 // array of all recognized commands that can be inputted by user
 extern const char *cmds[];
@@ -40,20 +44,20 @@ Command parse_cmd(char *str);
 // function prototypes for each of the commands that will have to be implemented
 
 // run the program
-void run(CommandInfo *info);
+void run(CommandInfo *ci);
 
 // add a break_point
 // corresponds to the break command, but break is a C keyword
-void add_break(Command c, CommandInfo *info);
+void add_break(Command c, CommandInfo *ci, HardwareInfo *hi);
 
 // clear a breakpoint
-void clear(Command c, CommandInfo *info);
+void clear(Command c, CommandInfo *ci);
 
 // continue from a breakpoint
-void cont(CommandInfo *info);
+void cont(CommandInfo *ci);
 
 // execute the next instruction
-void next(CommandInfo *info);
+void next(CommandInfo *ci, HardwareInfo *hi);
 
 // print a value, can be from a register, data memory, or code memory addresss
 void print(Command c);
