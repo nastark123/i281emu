@@ -24,6 +24,8 @@ LLNode *ll_add(LLNode *head, LLNode *node_to_add) {
     while(cur->next != NULL) cur = cur->next;
     cur->next = node_to_add;
     node_to_add->prev = cur;
+
+    return head;
 }
 
 LLNode *ll_remove(LLNode *head, int n) {

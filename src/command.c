@@ -35,11 +35,9 @@ void run(CommandInfo *ci) {
 void add_break(Command c, CommandInfo *ci, HardwareInfo *hi) {
     // char pointer to check for strtol errors
     char *end = NULL;
-    int line = strtol(c.extra, end, 10);
+    int line = strtol(c.extra, &end, 10);
 
-    // end will be NULL if the conversion succeeded
-    // TODO maybe clean this up
-    if(end == NULL) {
+    if(*end == '\0') {
         // check if the instruction is out of bounds of valid range
         if(line >= hi->num_opcodes || line < 0) {
             printf("Error adding breakpoint: instruction number out of range\n");
@@ -61,9 +59,9 @@ void add_break(Command c, CommandInfo *ci, HardwareInfo *hi) {
 void clear(Command c, CommandInfo *ci, HardwareInfo *hi) {
     // char pointer to check for strtol errors
     char *end = NULL;
-    int line = strtol(c.extra, end, 10);
+    int line = strtol(c.extra, &end, 10);
 
-    if(end == NULL) {
+    if(*end == '\0') {
         // check if the instruction is out of bounds of valid range
         if(line >= hi->num_opcodes || line < 0) {
             printf("Error adding breakpoint: instruction number out of range\n");

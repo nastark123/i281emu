@@ -43,8 +43,6 @@ int main(int argc, char *argv[]) {
     //     print_bin((uint8_t) hi.c_mem[i]);
     //     printf("\n");
     // }
-
-    int cmd_len = 0;
     
     while(!ci.run) {
         // prompt the user for a command
