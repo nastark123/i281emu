@@ -14,7 +14,7 @@ void parse_and_exec_cmd(char *str, CommandInfo *ci, HardwareInfo *hi) {
             break;
 
         case CLEAR:
-            clear(cmd, ci);
+            clear(cmd, ci, hi);
             break;
 
         case CONT:

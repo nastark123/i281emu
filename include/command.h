@@ -7,6 +7,7 @@
 #include <time.h>
 #include "hardwaredefs.h"
 #include "linkedlist.h"
+#include "instructions.h"
 
 // struct that bundles the data necessary to execute commands
 typedef struct {
@@ -51,7 +52,7 @@ void run(CommandInfo *ci);
 void add_break(Command c, CommandInfo *ci, HardwareInfo *hi);
 
 // clear a breakpoint
-void clear(Command c, CommandInfo *ci);
+void clear(Command c, CommandInfo *ci, HardwareInfo *hi);
 
 // continue from a breakpoint
 void cont(CommandInfo *ci);

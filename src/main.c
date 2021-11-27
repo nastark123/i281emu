@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
         // check if we hit a breakpoint
         LLNodeData data;
         data.i = hi.program_counter;
-        if(ll_contains(ci.break_head, data)) {
+        if(ll_contains(ci.break_head, data) >= 0) {
             // stop the timer
             clock_t end = clock();
 
