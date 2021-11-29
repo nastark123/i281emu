@@ -41,9 +41,17 @@ void print_d_mem_bin(HardwareInfo hi) {
 void print_d_mem_hex(HardwareInfo hi) {
     for(int i = 0; i < D_MEM_SIZE - 1; i++) {
         printf("0x%02x ", hi.d_mem[i]);
-        if((i -+ 1) != 0 && (i + 1) % 8 == 0) printf("\n");
+        if((i -+ 1) != 0 && (i + 1) % 8 == 0) printf("\n"); // add a newline every 8 values
     }
     printf("0x%02x\n", hi.d_mem[D_MEM_SIZE - 1]);
+}
+
+void print_c_mem_hex(HardwareInfo hi) {
+    for(int i = 0; i < D_MEM_SIZE - 1; i++) {
+        printf("0x%04x ", hi.c_mem[i]);
+        if((i -+ 1) != 0 && (i + 1) % 4 == 0) printf("\n"); // add a newline every 4 values
+    }
+    printf("0x%04x\n", hi.d_mem[D_MEM_SIZE - 1]);
 }
 
 void print_bin(uint8_t bin) {

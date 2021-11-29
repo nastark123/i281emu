@@ -21,8 +21,8 @@ void parse_and_exec_cmd(char *str, CommandInfo *ci, HardwareInfo *hi) {
             cont(ci);
             break;
 
-        case NEXT:
-            next(ci, hi);
+        case DUMP:
+            dump(cmd, hi);
             break;
 
         case PRINT:
@@ -31,6 +31,19 @@ void parse_and_exec_cmd(char *str, CommandInfo *ci, HardwareInfo *hi) {
 
         case TIME:
             print_time(ci);
+            break;
+
+        case HELP:
+            help();
+            break;
+
+        case QUIT:
+            quit();
+            break;
+
+        default:
+            printf("Error: Unrecognized command\n");
+            printf("Type \"help\" for a list of commands\n");
             break;
     }
 }

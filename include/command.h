@@ -23,7 +23,7 @@ typedef struct {
     char *extra; // extra data passed with the command
 } Command;
 
-#define NUM_CMDS 7
+#define NUM_CMDS 9
 
 // array of all recognized commands that can be inputted by user
 extern const char *cmds[];
@@ -32,9 +32,11 @@ extern const char *cmds[];
 #define BREAK 0x01
 #define CLEAR 0x02
 #define CONT 0x03
-#define NEXT 0x04
+#define DUMP 0x04
 #define PRINT 0x05
 #define TIME 0x06
+#define HELP 0x07
+#define QUIT 0x08
 
 // converts the string representation of a command to its id
 int cmd_to_id(const char *cmd);
@@ -57,8 +59,9 @@ void clear(Command c, CommandInfo *ci, HardwareInfo *hi);
 // continue from a breakpoint
 void cont(CommandInfo *ci);
 
-// execute the next instruction
-void next(CommandInfo *ci, HardwareInfo *hi);
+// dump the value of something either to the screen or to a file
+// TODO add file dump
+void dump(Command c, HardwareInfo *hi);
 
 // print a value, can be from a register, data memory, or code memory addresss
 void print(Command c, HardwareInfo *hi);
@@ -66,5 +69,11 @@ void print(Command c, HardwareInfo *hi);
 // print the current amount of time that the program has used
 // called print_time to avoid naming conflicts
 void print_time(CommandInfo *ci);
+
+// displays the help dialog
+void help();
+
+// quits the emulator
+void quit();
 
 #endif

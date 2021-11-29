@@ -1,6 +1,6 @@
 #include "command.h"
 
-const char *cmds[] = {"run", "break", "clear", "cont", "next", "print", "time"};
+const char *cmds[] = {"run", "break", "clear", "cont", "dump", "print", "time", "help", "quit"};
 
 int cmd_to_id(const char *cmd) {
     for(int i = 0; i < NUM_CMDS; i++) {
@@ -89,9 +89,17 @@ void cont(CommandInfo *ci) {
     printf("Continuing...\n");
 }
 
-void next(CommandInfo *ci, HardwareInfo *hi) {
-    // // this seems hacky, but its the cleanest way I can come up with to implement this
-    // parse_and_exec(hi->c_mem[hi->program_counter], hi);
+void dump(Command c, HardwareInfo *hi) {
+    if(strncmp(c.extra, "dmem", 4) == 0) {
+        print_d_mem_hex(*hi);
+    } else if(strncmp(c.extra, "cmem", 4) == 0) {
+        print_c_mem_hex(*hi);
+    } else if(strncmp(c.extra, "reg", 3) == 0) {
+        print_regs_hex(*hi);
+    } else {
+        printf("Invalid location specified.  Valid locations are dmem, cmem, and reg\n");
+        return;
+    }
 }
 
 void print(Command c, HardwareInfo *hi) {
@@ -128,4 +136,23 @@ void print_time(CommandInfo *ci) {
     double time_secs = (double)ci->time_taken / CLOCKS_PER_SEC;
     printf("%d instructions executed in ~%.03lf milliseconds (this number is approximate for low instruction counts)\n", ci->instructions_executed, 1e3 * time_secs);
     printf("~%.02lf million instructions per second\n", ci->instructions_executed / time_secs / 1e6);
+}
+
+void help() {
+    printf("i281emu Help:\n");
+    printf("Commands:\n");
+    printf("run - begins running the loaded program\n");
+    printf("break - adds a breakpoint at the specified program counter value\n");
+    printf("clear - removes a breakpoint at the specified program counter value, or does nothing if it doesn't exist\n");
+    printf("cont - continues execution after a breakpoint\n");
+    printf("next - executes the next instruction - DO NOT USE, NONWORKING\n");
+    printf("print - prints the value at a specified memory location, which can be reg, dmem, or cmem\n");
+    printf("time - prints the number of milliseconds spent executing the program\n");
+    printf("help - displays this screen\n");
+    printf("quit - quits i281emu\n");
+}
+
+void quit() {
+    printf("Quitting...\n");
+    exit(0);
 }

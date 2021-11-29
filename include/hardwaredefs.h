@@ -35,6 +35,9 @@ void print_d_mem_bin(HardwareInfo hi);
 // prints the current values stoed in data memory to the screen as hex
 void print_d_mem_hex(HardwareInfo hi);
 
+// prints the current values stored in code memory to the screen as hex
+void print_c_mem_hex(HardwareInfo hi);
+
 // helper function to print binary
 void print_bin(uint8_t bin);
 
