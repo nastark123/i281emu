@@ -294,8 +294,8 @@ void br(ParsedInst inst, HardwareInfo *hi) {
             break;
 
         case BRG:
-            if(((hi->alu_flag & FLAG_Z) == 0 && (hi->alu_flag & (FLAG_O | FLAG_N)) == 0)
-                || (hi->alu_flag & (FLAG_O | FLAG_N)) == (FLAG_O | FLAG_N)) {
+            if((hi->alu_flag & FLAG_Z) == 0 && (((hi->alu_flag & (FLAG_O | FLAG_N)) == 0
+                || (hi->alu_flag & (FLAG_O | FLAG_N)) == (FLAG_O | FLAG_N)))) {
                 
                 // hi->program_counter += 1 + ((int8_t) inst.data);
                 hi->program_counter += ((int8_t) inst.data);
@@ -303,7 +303,7 @@ void br(ParsedInst inst, HardwareInfo *hi) {
             break;
 
         case BRGE:
-            if((hi->alu_flag & (FLAG_O | FLAG_N)) == 0 || (hi->alu_flag & (FLAG_O | FLAG_N)) == (FLAG_O | FLAG_N)) {
+            if((hi->alu_flag & (FLAG_O | FLAG_N)) == 0 || ((hi->alu_flag & (FLAG_O | FLAG_N)) == (FLAG_O | FLAG_N))) {
                 
                 // hi->program_counter += 1 + ((int8_t) inst.data);
                 hi->program_counter += ((int8_t) inst.data);
