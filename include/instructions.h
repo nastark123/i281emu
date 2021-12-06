@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "hardwaredefs.h"
 
 // constant definitions for each of the opcodes
 // the opcodes are stored in the upper 4 bits of the most significant byte
@@ -69,34 +70,34 @@ ParsedInst parse_opcode(uint16_t inst);
 char* opcode_to_str(ParsedInst inst);
 
 // function prototypes for each of the instructions
-void input(ParsedInst inst);
+void input(ParsedInst inst, HardwareInfo *hi);
 
-void move(ParsedInst inst);
+void move(ParsedInst inst, HardwareInfo *hi);
 
-void loadi(ParsedInst inst);
+void loadi(ParsedInst inst, HardwareInfo *hi);
 
-void add(ParsedInst inst);
+void add(ParsedInst inst, HardwareInfo *hi);
 
-void addi(ParsedInst inst);
+void addi(ParsedInst inst, HardwareInfo *hi);
 
-void sub(ParsedInst inst);
+void sub(ParsedInst inst, HardwareInfo *hi);
 
-void subi(ParsedInst inst);
+void subi(ParsedInst inst, HardwareInfo *hi);
 
-void load(ParsedInst inst);
+void load(ParsedInst inst, HardwareInfo *hi);
 
-void loadf(ParsedInst inst);
+void loadf(ParsedInst inst, HardwareInfo *hi);
 
-void store(ParsedInst inst);
+void store(ParsedInst inst, HardwareInfo *hi);
 
-void storef(ParsedInst inst);
+void storef(ParsedInst inst, HardwareInfo *hi);
 
-void shift(ParsedInst inst);
+void shift(ParsedInst inst, HardwareInfo *hi);
 
-void cmp(ParsedInst inst);
+void cmp(ParsedInst inst, HardwareInfo *hi);
 
-void jump(ParsedInst inst);
+void jump(ParsedInst inst, HardwareInfo *hi);
 
-void br(ParsedInst inst);
+void br(ParsedInst inst, HardwareInfo *hi);
 
 #endif

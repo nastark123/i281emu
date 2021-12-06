@@ -59,8 +59,6 @@ int parse_d_mem_bin(char *filename, int8_t *out, size_t len) {
         if(found_data_section) {
             if(buff[0] == '\0') break; // we read a blank line, which separates the code section from the next one (usually data segment)
 
-            uint8_t num_bits = 0; // number of bits parsed from current line
-
             uint8_t i = 0;
 
             while(!isdigit(buff[i])) i++;

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
+#include "control.h"
 #include "hardwaredefs.h"
 #include "instructions.h"
 #include "fileparse.h"
@@ -13,128 +14,92 @@
  */
 
 int main(int argc, char *argv[]) {
-    // printf("Enter a binary file to emulate: ");
-    // char buff[128];
-    // fgets(buff, 128, stdin);
 
-    // buff[strlen(buff) - 1] = '\0'; // remove newline
+    // struct that will store the program counter, alu flag, registers, data memory, and code memory
+    HardwareInfo hi;
+    memset(&hi, 0, sizeof(hi));
 
-    // int num_opcodes = parse_binary_bin(buff, c_mem, C_MEM_SIZE);
+    hi.num_opcodes = parse_binary_bin(argv[1], hi.c_mem, C_MEM_SIZE);
 
-    // int num_data = parse_d_mem_bin(buff, d_mem, D_MEM_SIZE);
+    // struct that will store info to be passed to the command interpreter
+    CommandInfo ci;
+    memset(&ci, 0, sizeof(ci));
+    ci.break_head = NULL;
+    ci.time_taken = 0;
 
-    int instructions_executed = 0;
+    // buffer to store user commands
+    char *cmd_buff = malloc(sizeof(char) * 1024);
+    memset(cmd_buff, 0, 1024);
 
-    int num_opcodes = parse_binary_bin(argv[1], c_mem, C_MEM_SIZE);
+    int num_data = parse_d_mem_bin(argv[1], hi.d_mem, D_MEM_SIZE);
 
-    int num_data = parse_d_mem_bin(argv[1], d_mem, D_MEM_SIZE);
+    print_welcome();
 
-    printf("Read %d opcodes from file\n", num_opcodes);
+    printf("Read %d opcodes from file\n", hi.num_opcodes);
     printf("Read %d bytes from data segment\n\n", num_data);
 
-    for(int i = 0; i < C_MEM_SIZE; i++) {
-        print_bin((uint8_t)(c_mem[i] >> 8));
-        print_bin((uint8_t) c_mem[i]);
-        printf("\n");
+    // for(int i = 0; i < hi.num_opcodes; i++) {
+    //     print_bin((uint8_t)(hi.c_mem[i] >> 8));
+    //     print_bin((uint8_t) hi.c_mem[i]);
+    //     printf("\n");
+    // }
+    
+    while(!ci.run) {
+        // prompt the user for a command
+        prompt_cmd(NULL, cmd_buff, 1024);
+        // execute the command read from the user
+        parse_and_exec_cmd(cmd_buff, &ci, &hi);
     }
 
     clock_t start = clock();
 
-    while(program_counter < num_opcodes) {
-        // current instruction to be executed
-        ParsedInst inst = parse_opcode(c_mem[program_counter]);
-        switch(inst.opcode) {
-            case NOOP:
-                printf("NOOP\n");
-                break;
+    while(hi.program_counter < hi.num_opcodes) {
 
-            case INPUT:
-                input(inst);
-                break;
+        // check if we hit a breakpoint
+        LLNodeData data;
+        data.i = hi.program_counter;
+        if(ll_contains(ci.break_head, data) >= 0) {
+            // stop the timer
+            clock_t end = clock();
 
-            case MOVE:
-                move(inst);
-                break;
+            // update the time taken
+            ci.time_taken += end - start;
 
-            case LOADI:
-                loadi(inst);
-                break;
+            printf("Hit breakpoint at instruction %d\n", hi.program_counter);
+            // disable execution
+            ci.run = false;
+            // parse and run commands until the user tells us to continue the program
+            while(!ci.run) {
+                // prompt the user for a command
+                prompt_cmd(NULL, cmd_buff, 1024);
+                // execute the command read from the user
+                parse_and_exec_cmd(cmd_buff, &ci, &hi);
+            }
 
-            case ADD:
-                add(inst);
-                break;
-
-            case ADDI:
-                addi(inst);
-                break;
-
-            case SUB:
-                sub(inst);
-                break;
-
-            case SUBI:
-                subi(inst);
-                break;
-
-            case LOAD:
-                load(inst);
-                break;
-
-            case LOADF:
-                loadf(inst);
-                break;
-
-            case STORE:
-                store(inst);
-                break;
-
-            case STOREF:
-                storef(inst);
-                break;
-
-            case SHIFT:
-                shift(inst);
-                break;
-
-            case CMP:
-                cmp(inst);
-                break;
-
-            case JUMP:
-                jump(inst);
-                break;
-
-            case BR:
-                br(inst);
-                break;
+            // resume the timer
+            start = clock();
         }
+        
+        parse_and_exec(hi.c_mem[hi.program_counter], &hi);
 
-        // printf("Program counter: %d\n", program_counter);
-        // printf("Current instruction at program counter: %s\n", opcode_to_str(inst));
-        // printf("Contents of data memory:\n");
-        // print_d_mem_hex();
-        // print_regs_hex();
-        // printf("ALU flags: %d", alu_flag);
-        // printf("\n\n");
-
-        program_counter++;
-        instructions_executed++;
-
-        // getchar();
+        hi.program_counter++;
+        ci.instructions_executed++;
     }
 
     clock_t end = clock();
+    ci.time_taken += end - start;
 
     printf("Final contents of data memory:\n");
-    print_d_mem_hex();
-    print_regs_hex();
-    printf("ALU flags: %d", alu_flag);
+    print_d_mem_hex(hi);
+    print_regs_hex(hi);
+    printf("ALU flags: %d", hi.alu_flag);
     printf("\n\n");
 
-    double time = (double)(end - start) / CLOCKS_PER_SEC;
-    double inst_per_sec = instructions_executed / time;
+    double time_sec = (double)ci.time_taken / CLOCKS_PER_SEC;
+    double inst_per_sec = ci.instructions_executed / time_sec;
 
-    printf("Program done (%.02lf million instructions per second)\n", inst_per_sec / 1e6);
+    printf("Program done\n");
+    printf("%d instructions executed in ~%.03lf milliseconds (~%.02lf million instructions per second)\n", ci.instructions_executed, time_sec * 1e3, inst_per_sec / 1e6);
 
 
     return 0;
