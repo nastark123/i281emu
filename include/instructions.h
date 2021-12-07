@@ -60,7 +60,7 @@ typedef struct {
     // bits 0-1 of the MSB
     uint8_t b01;
     // extra data from the LSB
-    uint8_t data;
+    int8_t data;
 } ParsedInst;
 
 // function to return the opcode from 
