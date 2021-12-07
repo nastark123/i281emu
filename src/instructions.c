@@ -104,6 +104,9 @@ void loadi(ParsedInst inst, HardwareInfo *hi) {
 }
 
 void add(ParsedInst inst, HardwareInfo *hi) {
+    // clear the alu flag
+    hi->alu_flag = 0;
+
     int16_t sum = hi->regs[inst.b23] + hi->regs[inst.b01];
     hi->alu_flag = 0;
     // check zero
@@ -132,6 +135,9 @@ void add(ParsedInst inst, HardwareInfo *hi) {
 }
 
 void addi(ParsedInst inst, HardwareInfo *hi) {
+    // clear the alu flag
+    hi->alu_flag = 0;
+
     int16_t sum = hi->regs[inst.b23] + (int8_t) inst.data;
     hi->alu_flag = 0;
     // check zero
@@ -160,6 +166,9 @@ void addi(ParsedInst inst, HardwareInfo *hi) {
 }
 
 void sub(ParsedInst inst, HardwareInfo *hi) {
+    // clear the alu flag
+    hi->alu_flag = 0;
+
     int8_t neg = -hi->regs[inst.b01];
     int16_t sum = hi->regs[inst.b23] + neg;
     hi->alu_flag = 0;
@@ -189,6 +198,9 @@ void sub(ParsedInst inst, HardwareInfo *hi) {
 }
 
 void subi(ParsedInst inst, HardwareInfo *hi) {
+    // clear the alu flag
+    hi->alu_flag = 0;
+
     int16_t neg = -((int8_t) inst.data);
     int16_t sum = hi->regs[inst.b23] + neg;
     hi->alu_flag = 0;
@@ -240,12 +252,24 @@ void storef(ParsedInst inst, HardwareInfo *hi) {
 }
 
 void shift(ParsedInst inst, HardwareInfo *hi) {
-    if((inst.b01 & 1) == SHIFTL) hi->regs[inst.b23] <<= 1;
-    else if((inst.b01 & 1) == SHIFTR) hi->regs[inst.b23] >>= 1;
+    // clear the alu flag
+    hi->alu_flag = 0;
+
+    if((inst.b01 & 1) == SHIFTL) {
+        // set the carry bit to be equal to the value of the bit shifted off of the byte
+        if(hi->regs[inst.b23] & 0x01) hi->alu_flag |= FLAG_C;
+        hi->regs[inst.b23] <<= 1;
+    } else if((inst.b01 & 1) == SHIFTR) {
+        if(hi->regs[inst.b23] & 0x80) hi->alu_flag |= FLAG_C;
+        hi->regs[inst.b23] >>= 1;
+    }
     else printf("Error: invalid shift specified");
 }
 
 void cmp(ParsedInst inst, HardwareInfo *hi) {
+    // clear the alu flag
+    hi->alu_flag = 0;
+
     int8_t neg = -hi->regs[inst.b01];
     int16_t sum = hi->regs[inst.b23] + neg;
     hi->alu_flag = 0;
